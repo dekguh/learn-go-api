@@ -17,16 +17,24 @@ type ServerConfig struct {
 	Port string `mapstructure:"port"`
 }
 
+type DatabaseConfig struct {
+	Host     string `mapstructure:"host"`
+	Name     string `mapstructure:"name"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+}
+
 type Config struct {
-	Application AppConfig    `mapstructure:"application"`
-	Server      ServerConfig `mapstructure:"server"`
+	Application AppConfig      `mapstructure:"application"`
+	Server      ServerConfig   `mapstructure:"server"`
+	Database    DatabaseConfig `mapstructure:"database"`
 }
 
 func LoadConfig() *Config {
 	_ = godotenv.Load(".env")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("configs/development")
+	viper.AddConfigPath("configs/")
 	viper.AutomaticEnv()
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
