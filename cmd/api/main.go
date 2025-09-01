@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	configs "github.com/dekguh/learn-go-api/internal/api/config"
+	configs "github.com/dekguh/learn-go-api/internal/pkg/config"
 	"github.com/gin-gonic/gin"
 )
 
