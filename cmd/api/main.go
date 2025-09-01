@@ -10,7 +10,7 @@ import (
 func main() {
 	configYaml := configs.LoadConfig()
 
-	log.Println("config:", configYaml.Application)
+	log.Println("run on port: ", configYaml.Server.Port)
 
 	router := gin.Default()
 
@@ -20,5 +20,5 @@ func main() {
 		})
 	})
 
-	router.Run(":8080")
+	router.Run(":" + configYaml.Server.Port)
 }
