@@ -1,5 +1,4 @@
-module learn-go-api
-
+module github.com/dekguh/learn-go-api
 go 1.25.0
 
 require (
