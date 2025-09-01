@@ -1,0 +1,7 @@
+application:
+    name: string
+    version: string
+    environment: development
+
+server:
+    port: number
