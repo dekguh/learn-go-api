@@ -1,0 +1,7 @@
+application:
+    name: "APP_NAME"
+    version: "APP_VERSION"
+    environment: "APP_ENVIRONMENT"
+
+server:
+    port: 0

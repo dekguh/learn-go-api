@@ -3,17 +3,14 @@ package main
 import (
 	"log"
 
-	"github.com/dekguh/learn-go-api/configs"
+	configs "github.com/dekguh/learn-go-api/internal/api/config"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	configYaml, err := configs.LoadConfig("")
-	if err != nil {
-		log.Fatalln("failed to load config:", err)
-	}
+	configYaml := configs.LoadConfig()
 
-	log.Println("config:", configYaml)
+	log.Println("config:", configYaml.Application)
 
 	router := gin.Default()
 
