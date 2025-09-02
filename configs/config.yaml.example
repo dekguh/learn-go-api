@@ -9,3 +9,9 @@ database:
     name: ""
     username: ""
     password: ""
+openapi:
+    title: ""
+    description: ""
+    host: ""
+    basePath: ""
+    version: ""

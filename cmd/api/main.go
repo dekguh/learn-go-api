@@ -12,11 +12,11 @@ import (
 
 func main() {
 	configYaml := configs.LoadConfig()
-	docs.SwaggerInfo.Host = "localhost:8080"
-	docs.SwaggerInfo.BasePath = "/api"
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Title = "Hello World"
-	docs.SwaggerInfo.Description = "Hello World docs"
+	docs.SwaggerInfo.Host = configYaml.Openapi.Host
+	docs.SwaggerInfo.BasePath = configYaml.Openapi.Basepath
+	docs.SwaggerInfo.Version = configYaml.Openapi.Version
+	docs.SwaggerInfo.Title = configYaml.Openapi.Title
+	docs.SwaggerInfo.Description = configYaml.Openapi.Description
 
 	log.Println("run on port: ", configYaml.Server.Port)
 

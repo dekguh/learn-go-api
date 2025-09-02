@@ -24,10 +24,19 @@ type DatabaseConfig struct {
 	Password string `mapstructure:"password"`
 }
 
+type OpenapiConfig struct {
+	Title       string `mapstructure:"title"`
+	Description string `mapstructure:"description"`
+	Host        string `mapstructure:"host"`
+	Basepath    string `mapstructure:"basepath"`
+	Version     string `mapstructure:"version"`
+}
+
 type Config struct {
 	Application AppConfig      `mapstructure:"application"`
 	Server      ServerConfig   `mapstructure:"server"`
 	Database    DatabaseConfig `mapstructure:"database"`
+	Openapi     OpenapiConfig  `mapstructure:"openapi"`
 }
 
 func LoadConfig() *Config {
