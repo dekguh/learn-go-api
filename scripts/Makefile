@@ -1,6 +1,9 @@
 go run:
 	cd ../ && go run cmd/api/main.go
 
+go migrate:
+	cd ../ && go run cmd/migrate/main.go
+
 docker-compose db-dev up:
 	cd ../deployments/docker && docker-compose -f db/docker-compose.yml --env-file ../../.env -p learn-go-api-dev up -d
 
