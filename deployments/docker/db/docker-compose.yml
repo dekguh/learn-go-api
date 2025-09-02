@@ -11,7 +11,9 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5434:5432"
+      - target: 5432
+        published: 5434
+        protocol: tcp
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
