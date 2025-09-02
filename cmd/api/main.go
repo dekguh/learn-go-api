@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
-
 	"github.com/dekguh/learn-go-api/cmd/api/docs"
 	http "github.com/dekguh/learn-go-api/internal/api/http/handler"
 	configs "github.com/dekguh/learn-go-api/internal/pkg/config"
+	"github.com/dekguh/learn-go-api/internal/pkg/database"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -18,7 +18,13 @@ func main() {
 	docs.SwaggerInfo.Title = configYaml.Openapi.Title
 	docs.SwaggerInfo.Description = configYaml.Openapi.Description
 
-	log.Println("run on port: ", configYaml.Server.Port)
+	GormDB := gorm.DB{}
+	database.InitDatabase(configYaml, &GormDB)
+	DBsql, err := GormDB.DB()
+	if err != nil {
+		panic("failed to connect to database: " + err.Error())
+	}
+	defer DBsql.Close()
 
 	router := http.SetupRouter()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -22,6 +22,7 @@ type DatabaseConfig struct {
 	Name     string `mapstructure:"name"`
 	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
+	Port     string `mapstructure:"port"`
 }
 
 type OpenapiConfig struct {
