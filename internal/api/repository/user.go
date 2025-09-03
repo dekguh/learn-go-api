@@ -8,6 +8,7 @@ import (
 type UserRepository interface {
 	FindByEmail(email string) (*model.User, error)
 	FindById(id uint) (*model.User, error)
+	Create(user *model.User) error
 }
 
 type userRepository struct {
@@ -28,6 +29,13 @@ func (repo *userRepository) FindById(ID uint) (*model.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (repo *userRepository) Create(user *model.User) error {
+	if err := repo.db.Create(user).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {

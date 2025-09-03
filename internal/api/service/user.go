@@ -6,6 +6,7 @@ import (
 
 	"github.com/dekguh/learn-go-api/internal/api/model"
 	"github.com/dekguh/learn-go-api/internal/api/repository"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
@@ -49,6 +50,31 @@ func (service *userService) GetUserById(ID uint) (*model.User, error) {
 	}
 
 	return result, nil
+}
+
+func (service *userService) RegisterUser(email, name, password string) (*model.User, error) {
+	if exists, _ := service.repo.FindByEmail(email); exists != nil {
+		return nil, errors.New("user already exists")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(password), bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &model.User{
+		Email:    email,
+		Name:     name,
+		Password: string(hashedPassword),
+	}
+
+	if err := service.repo.Create(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func NewUserService(repo repository.UserRepository) UserService {

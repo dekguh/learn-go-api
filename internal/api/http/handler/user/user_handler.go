@@ -14,6 +14,12 @@ type UserHandler struct {
 	service service.UserService
 }
 
+type RegisterUserReq struct {
+	Name     string `json:"name" binding:"required,min=3,max=64"`
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8,max=64"`
+}
+
 func UserRoutes(r *gin.Engine, db *gorm.DB) {
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
