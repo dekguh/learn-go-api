@@ -2,16 +2,17 @@ package service
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/dekguh/learn-go-api/internal/api/model"
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
 	GetUserByEmail(email string) (*model.User, error)
 	GetUserById(ID uint) (*model.User, error)
+	RegisterUser(email, name, password string) (*model.User, error)
 }
 
 type userService struct {
@@ -24,7 +25,7 @@ func (service *userService) GetUserByEmail(email string) (*model.User, error) {
 	}
 
 	result, err := service.repo.FindByEmail(email)
-	if strings.Contains(err.Error(), "record not found") {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("user not found")
 	}
 
@@ -32,7 +33,13 @@ func (service *userService) GetUserByEmail(email string) (*model.User, error) {
 		return nil, errors.New("failed to get user by email")
 	}
 
-	return result, nil
+	return &model.User{
+		ID:        result.ID,
+		Email:     result.Email,
+		Name:      result.Name,
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
+	}, nil
 }
 
 func (service *userService) GetUserById(ID uint) (*model.User, error) {
@@ -49,7 +56,13 @@ func (service *userService) GetUserById(ID uint) (*model.User, error) {
 		return nil, errors.New("user not found")
 	}
 
-	return result, nil
+	return &model.User{
+		ID:        result.ID,
+		Email:     result.Email,
+		Name:      result.Name,
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
+	}, nil
 }
 
 func (service *userService) RegisterUser(email, name, password string) (*model.User, error) {
@@ -74,7 +87,13 @@ func (service *userService) RegisterUser(email, name, password string) (*model.U
 		return nil, err
 	}
 
-	return user, nil
+	return &model.User{
+		ID:        user.ID,
+		Email:     user.Email,
+		Name:      user.Name,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	}, nil
 }
 
 func NewUserService(repo repository.UserRepository) UserService {

@@ -28,6 +28,7 @@ func UserRoutes(r *gin.Engine, db *gorm.DB) {
 	group := r.Group("/users")
 	{
 		group.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
+		group.POST("/register", userHandler.RegisterUser)
 	}
 }
 
@@ -52,6 +53,31 @@ func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
 	}
 
 	user, err := handler.service.GetUserByEmail(email)
+	if err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	httputils.NewSuccessResponse(ctx, http.StatusOK, "success", user)
+}
+
+// @Summary Register user
+// @Description Register user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param registerUserReq body RegisterUserReq true "Register user request"
+// @Success 200 {object} httputils.SuccessResponse{data=model.User}
+// @Failure 400 {object} httputils.ErrorResponse
+// @Router /users/register [post]
+func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
+	var json RegisterUserReq
+	if err := ctx.ShouldBindJSON(&json); err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	user, err := handler.service.RegisterUser(json.Email, json.Name, json.Password)
 	if err != nil {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
