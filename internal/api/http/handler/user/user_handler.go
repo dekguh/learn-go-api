@@ -29,6 +29,15 @@ func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
+// @Summary Get user detail by email
+// @Description Get user detail based by user email
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param email path string true "User email"
+// @Success 200 {object} httputils.SuccessResponse{data=model.User}
+// @Failure 400 {object} httputils.ErrorResponse
+// @Router /users/detail/email/{email} [get]
 func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
 	email := ctx.Param("email")
 	if email == "" {
