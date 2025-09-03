@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "summary": "Login user",
                 "parameters": [
@@ -51,7 +51,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/service.LoginUserResponse"
+                                            "$ref": "#/definitions/model.UserDetailNoPasswordResponse"
                                         }
                                     }
                                 }
@@ -77,7 +77,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "summary": "Register user",
                 "parameters": [
@@ -103,7 +103,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/model.User"
+                                            "$ref": "#/definitions/model.UserDetailNoPasswordResponse"
                                         }
                                     }
                                 }
@@ -261,14 +261,23 @@ const docTemplate = `{
                 }
             }
         },
-        "service.LoginUserResponse": {
+        "model.UserDetailNoPasswordResponse": {
             "type": "object",
             "properties": {
-                "token": {
+                "createdAt": {
                     "type": "string"
                 },
-                "user": {
-                    "$ref": "#/definitions/model.User"
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         }

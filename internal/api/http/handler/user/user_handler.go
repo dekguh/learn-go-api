@@ -74,11 +74,11 @@ func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
 
 // @Summary Register user
 // @Description Register user
-// @Tags Users
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param registerUserReq body RegisterUserReq true "Register user request"
-// @Success 200 {object} httputils.SuccessResponse{data=model.User}
+// @Success 200 {object} httputils.SuccessResponse{data=model.UserDetailNoPasswordResponse}
 // @Failure 400 {object} httputils.ErrorResponse
 // @Router /auth/register [post]
 func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
@@ -100,11 +100,11 @@ func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 
 // @Summary Login user
 // @Description Login user
-// @Tags Users
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param loginUserReq body LoginUserReq true "Login user request"
-// @Success 200 {object} httputils.SuccessResponse{data=service.LoginUserResponse}
+// @Success 200 {object} httputils.SuccessResponse{data=model.UserDetailNoPasswordResponse}
 // @Failure 400 {object} httputils.ErrorResponse
 // @Router /auth/login [post]
 func (handler *UserHandler) LoginUser(ctx *gin.Context) {
