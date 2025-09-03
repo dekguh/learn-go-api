@@ -31,11 +31,15 @@ func UserRoutes(r *gin.Engine, db *gorm.DB) {
 	userService := service.NewUserService(userRepo)
 	userHandler := NewUserHandler(userService)
 
-	group := r.Group("/users")
+	groupAuth := r.Group("/auth")
 	{
-		group.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
-		group.POST("/register", userHandler.RegisterUser)
-		group.POST("/login", userHandler.LoginUser)
+		groupAuth.POST("/register", userHandler.RegisterUser)
+		groupAuth.POST("/login", userHandler.LoginUser)
+	}
+
+	groupUser := r.Group("/users")
+	{
+		groupUser.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
 	}
 }
 
@@ -76,7 +80,7 @@ func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
 // @Param registerUserReq body RegisterUserReq true "Register user request"
 // @Success 200 {object} httputils.SuccessResponse{data=model.User}
 // @Failure 400 {object} httputils.ErrorResponse
-// @Router /users/register [post]
+// @Router /auth/register [post]
 func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 	var json RegisterUserReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
@@ -102,7 +106,7 @@ func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 // @Param loginUserReq body LoginUserReq true "Login user request"
 // @Success 200 {object} httputils.SuccessResponse{data=service.LoginUserResponse}
 // @Failure 400 {object} httputils.ErrorResponse
-// @Router /users/login [post]
+// @Router /auth/login [post]
 func (handler *UserHandler) LoginUser(ctx *gin.Context) {
 	var json LoginUserReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
