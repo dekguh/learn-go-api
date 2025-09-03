@@ -6,6 +6,7 @@ import (
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"github.com/dekguh/learn-go-api/internal/api/service"
 	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils"
+	"github.com/dekguh/learn-go-api/internal/pkg/validator"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -73,7 +74,8 @@ func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
 func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 	var json RegisterUserReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		errors := validator.FormatValidationError(err)
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, validator.JoinErrorValidation(errors))
 		return
 	}
 
