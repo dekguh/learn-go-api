@@ -21,6 +21,11 @@ type RegisterUserReq struct {
 	Password string `json:"password" binding:"required,min=8,max=64"`
 }
 
+type LoginUserReq struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8,max=64"`
+}
+
 func UserRoutes(r *gin.Engine, db *gorm.DB) {
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
@@ -30,6 +35,7 @@ func UserRoutes(r *gin.Engine, db *gorm.DB) {
 	{
 		group.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
 		group.POST("/register", userHandler.RegisterUser)
+		group.POST("/login", userHandler.LoginUser)
 	}
 }
 
@@ -80,6 +86,32 @@ func (handler *UserHandler) RegisterUser(ctx *gin.Context) {
 	}
 
 	user, err := handler.service.RegisterUser(json.Email, json.Name, json.Password)
+	if err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	httputils.NewSuccessResponse(ctx, http.StatusOK, "success", user)
+}
+
+// @Summary Login user
+// @Description Login user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param loginUserReq body LoginUserReq true "Login user request"
+// @Success 200 {object} httputils.SuccessResponse{data=service.LoginUserResponse}
+// @Failure 400 {object} httputils.ErrorResponse
+// @Router /users/login [post]
+func (handler *UserHandler) LoginUser(ctx *gin.Context) {
+	var json LoginUserReq
+	if err := ctx.ShouldBindJSON(&json); err != nil {
+		errors := validator.FormatValidationError(err)
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, validator.JoinErrorValidation(errors))
+		return
+	}
+
+	user, err := handler.service.LoginUser(json.Email, json.Password)
 	if err != nil {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return

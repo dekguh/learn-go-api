@@ -5,6 +5,7 @@ import (
 
 	"github.com/dekguh/learn-go-api/internal/api/model"
 	"github.com/dekguh/learn-go-api/internal/api/repository"
+	"github.com/dekguh/learn-go-api/internal/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -13,10 +14,16 @@ type UserService interface {
 	GetUserByEmail(email string) (*model.User, error)
 	GetUserById(ID uint) (*model.User, error)
 	RegisterUser(email, name, password string) (*model.User, error)
+	LoginUser(email, password string) (*LoginUserResponse, error)
 }
 
 type userService struct {
 	repo repository.UserRepository
+}
+
+type LoginUserResponse struct {
+	Token string      `json:"token"`
+	User  *model.User `json:"user"`
 }
 
 func (service *userService) GetUserByEmail(email string) (*model.User, error) {
@@ -93,6 +100,33 @@ func (service *userService) RegisterUser(email, name, password string) (*model.U
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
+	}, nil
+}
+
+func (service *userService) LoginUser(email, password string) (*LoginUserResponse, error) {
+	user, err := service.repo.FindByEmail(email)
+	if err != nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	token, err := jwt.GenerateJwt(user.ID, user.Email)
+	if err != nil {
+		return nil, errors.New("failed to generate jwt")
+	}
+
+	return &LoginUserResponse{
+		Token: token,
+		User: &model.User{
+			Email:     user.Email,
+			Name:      user.Name,
+			ID:        user.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		},
 	}, nil
 }
 
