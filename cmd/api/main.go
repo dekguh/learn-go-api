@@ -26,7 +26,7 @@ func main() {
 	}
 	defer DBsql.Close()
 
-	router := http.SetupRouter()
+	router := http.SetupRouter(&GormDB)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run(":" + configYaml.Server.Port)
 }

@@ -1,15 +1,15 @@
 package http
 
 import (
-	"github.com/dekguh/learn-go-api/internal/api/http/handler/hello"
+	handler "github.com/dekguh/learn-go-api/internal/api/http/handler/user"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
-	helloHandler := hello.HelloHandler{}
-	helloHandler.HelloRoutes(r)
+	handler.UserRoutes(r, db)
 
 	return r
 }
