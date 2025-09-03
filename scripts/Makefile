@@ -1,10 +1,10 @@
-go run:
-	cd ../ && go run cmd/api/main.go
+run:
+	cd ../ && air
 
-go migrate:
+migrate:
 	cd ../ && go run cmd/migrate/main.go
 
-go swag init:
+swag init:
 	cd ../ && swag init -g cmd/api/main.go -d ./ -o ./cmd/api/docs
 
 docker-compose db-dev up:
