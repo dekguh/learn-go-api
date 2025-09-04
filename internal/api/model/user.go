@@ -18,3 +18,12 @@ type UserDetailNoPasswordResponse struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+type LoginUserResponse struct {
+	Token string `json:"token"`
+	User  *User  `json:"user"`
+}
+
+type RefreshTokenResponse struct {
+	Token string `json:"token"`
+}

@@ -115,7 +115,7 @@ func (handler *UserHandler) LoginUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := handler.service.LoginUser(json.Email, json.Password)
+	user, err := handler.service.LoginUser(json.Email, json.Password, ctx)
 	if err != nil {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
