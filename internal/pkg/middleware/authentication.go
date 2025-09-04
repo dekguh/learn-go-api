@@ -33,6 +33,7 @@ func Authentication() gin.HandlerFunc {
 		}
 
 		ctx.Set("user_id", claims.UserID)
+		ctx.Set("user_email", claims.Email)
 		ctx.Next()
 	}
 }

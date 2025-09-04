@@ -58,9 +58,20 @@ func NewUserHandler(service service.UserService) *UserHandler {
 // @Failure 400 {object} httputils.ErrorResponse
 // @Router /users/detail/email/{email} [get]
 func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
+	emailClaim := ctx.GetString("user_email")
+	if emailClaim == "" {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "email cookie is required")
+		return
+	}
+
 	email := ctx.Param("email")
 	if email == "" {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "email is required")
+		return
+	}
+
+	if emailClaim != email {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "you can only access your own data")
 		return
 	}
 
