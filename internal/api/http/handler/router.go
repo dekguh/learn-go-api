@@ -1,7 +1,8 @@
 package http
 
 import (
-	handler "github.com/dekguh/learn-go-api/internal/api/http/handler/user"
+	handlerTodo "github.com/dekguh/learn-go-api/internal/api/http/handler/todo"
+	handlerUser "github.com/dekguh/learn-go-api/internal/api/http/handler/user"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -9,7 +10,8 @@ import (
 func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
-	handler.UserRoutes(r, db)
+	handlerUser.UserRoutes(r, db)
+	handlerTodo.TodoRoutes(r, db)
 
 	return r
 }

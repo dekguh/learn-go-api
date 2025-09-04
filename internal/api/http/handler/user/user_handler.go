@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
+	"github.com/dekguh/learn-go-api/internal/api/http/middleware"
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"github.com/dekguh/learn-go-api/internal/api/service"
-	"github.com/dekguh/learn-go-api/internal/pkg/middleware"
 	dbutils "github.com/dekguh/learn-go-api/internal/pkg/utils/database"
 	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils/http"
 	"github.com/dekguh/learn-go-api/internal/pkg/validator"

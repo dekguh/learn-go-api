@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Order struct {
+type Todo struct {
 	ID          uint      `gorm:"primaryKey"`
 	UserID      uint      `gorm:"not null"`
 	Title       string    `gorm:"not null;size:128"`
