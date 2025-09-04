@@ -12,5 +12,6 @@ func main() {
 	GormDB := gorm.DB{}
 	database.InitDatabase(configYaml, &GormDB)
 
-	GormDB.AutoMigrate(&model.User{})
+	GormDB.AutoMigrate(&model.User{}, &model.Order{})
+	database.InitRLS(&GormDB)
 }

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/dekguh/learn-go-api/internal/pkg/jwt"
-	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils"
+	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils/http"
 	"github.com/gin-gonic/gin"
 )
 

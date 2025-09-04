@@ -6,7 +6,8 @@ import (
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"github.com/dekguh/learn-go-api/internal/api/service"
 	"github.com/dekguh/learn-go-api/internal/pkg/middleware"
-	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils"
+	dbutils "github.com/dekguh/learn-go-api/internal/pkg/utils/database"
+	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils/http"
 	"github.com/dekguh/learn-go-api/internal/pkg/validator"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -40,7 +41,9 @@ func UserRoutes(r *gin.Engine, db *gorm.DB) {
 
 	groupUser := r.Group("/users", middleware.Authentication())
 	{
-		groupUser.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
+		groupUser.GET("/detail/email/:email", func(ctx *gin.Context) {
+			userHandler.GetUserDetailByEmail(ctx, db)
+		})
 	}
 }
 
@@ -57,8 +60,11 @@ func NewUserHandler(service service.UserService) *UserHandler {
 // @Success 200 {object} httputils.SuccessResponse{data=model.User}
 // @Failure 400 {object} httputils.ErrorResponse
 // @Router /users/detail/email/{email} [get]
-func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context) {
+func (handler *UserHandler) GetUserDetailByEmail(ctx *gin.Context, db *gorm.DB) {
 	emailClaim := ctx.GetString("user_email")
+	idClaim := ctx.GetUint("user_id")
+	dbutils.SetCurrentUserId(db, idClaim)
+
 	if emailClaim == "" {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "email cookie is required")
 		return
