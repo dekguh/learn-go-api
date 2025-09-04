@@ -5,6 +5,7 @@ import (
 
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"github.com/dekguh/learn-go-api/internal/api/service"
+	"github.com/dekguh/learn-go-api/internal/pkg/middleware"
 	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils"
 	"github.com/dekguh/learn-go-api/internal/pkg/validator"
 	"github.com/gin-gonic/gin"
@@ -37,7 +38,7 @@ func UserRoutes(r *gin.Engine, db *gorm.DB) {
 		groupAuth.POST("/login", userHandler.LoginUser)
 	}
 
-	groupUser := r.Group("/users")
+	groupUser := r.Group("/users", middleware.Authentication())
 	{
 		groupUser.GET("/detail/email/:email", userHandler.GetUserDetailByEmail)
 	}
