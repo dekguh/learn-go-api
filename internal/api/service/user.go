@@ -126,7 +126,7 @@ func (service *userService) LoginUser(email, password string, ctx *gin.Context) 
 		refreshToken,
 		int(1*24*time.Hour.Seconds()),
 		"/",
-		os.Getenv("CORS_HOST"),
+		os.Getenv("COOKIE_HOST"),
 		false,
 		true,
 	)
