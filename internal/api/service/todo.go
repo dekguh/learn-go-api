@@ -11,6 +11,7 @@ type TodoService interface {
 	CreateTodo(todo *model.Todo) (*model.Todo, error)
 	FindAllTodos() ([]model.Todo, error)
 	DeleteTodoById(id uint) error
+	DetailTodoById(id uint) (model.Todo, error)
 }
 
 type todoService struct {
@@ -39,6 +40,19 @@ func (service *todoService) DeleteTodoById(id uint) error {
 	}
 
 	return nil
+}
+
+func (service *todoService) DetailTodoById(id uint) (model.Todo, error) {
+	if id == 0 {
+		return model.Todo{}, errors.New("id is required")
+	}
+
+	todo, err := service.repo.DetailById(id)
+	if err != nil {
+		return model.Todo{}, err
+	}
+
+	return todo, nil
 }
 
 func NewTodoService(repo repository.TodoRepository) TodoService {

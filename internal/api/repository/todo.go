@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"log"
 
 	"github.com/dekguh/learn-go-api/internal/api/model"
 	"gorm.io/gorm"
@@ -12,6 +11,7 @@ type TodoRepository interface {
 	Create(todo *model.Todo) error
 	FindAll() ([]model.Todo, error)
 	DeleteById(id uint) error
+	DetailById(id uint) (model.Todo, error)
 }
 
 type todoRepository struct {
@@ -37,7 +37,6 @@ func (repo *todoRepository) FindAll() ([]model.Todo, error) {
 func (repo *todoRepository) DeleteById(id uint) error {
 	result := repo.db.Delete(&model.Todo{}, id)
 	if result.Error != nil {
-		log.Println("failed to delete todo by id: ", result.Error)
 		return result.Error
 	}
 
@@ -46,6 +45,15 @@ func (repo *todoRepository) DeleteById(id uint) error {
 	}
 
 	return nil
+}
+
+func (repo *todoRepository) DetailById(id uint) (model.Todo, error) {
+	var todo model.Todo
+	if err := repo.db.Where("id = ?", id).First(&todo).Error; err != nil {
+		return model.Todo{}, err
+	}
+
+	return todo, nil
 }
 
 func NewTodoRepository(db *gorm.DB) TodoRepository {

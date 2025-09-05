@@ -40,6 +40,9 @@ func TodoRoutes(r *gin.Engine, db *gorm.DB) {
 		groupTodo.DELETE("/delete/:id", func(ctx *gin.Context) {
 			todoHandler.DeleteTodoById(ctx, db)
 		})
+		groupTodo.GET("/detail/:id", func(ctx *gin.Context) {
+			todoHandler.DetailTodoById(ctx, db)
+		})
 	}
 }
 
@@ -123,4 +126,31 @@ func (handler *TodoHandler) DeleteTodoById(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 	httputils.NewSuccessResponse(ctx, http.StatusOK, "Success delete todo", nil)
+}
+
+// @Summary Detail todo by id
+// @Description Detail todo by id
+// @Tags Todos
+// @Accept json
+// @Produce json
+// @Param id path string true "Todo id"
+// @Success 200 {object} httputils.SuccessResponse{data=model.Todo}
+// @Failure 400 {object} httputils.ErrorResponse
+// @Router /todos/detail/{id} [get]
+func (handler *TodoHandler) DetailTodoById(ctx *gin.Context, db *gorm.DB) {
+	idStr := ctx.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "Invalid ID format")
+		return
+	}
+	uintId := uint(id)
+
+	dbutils.SetCurrentUserId(db, ctx.GetUint("user_id"))
+	todo, err := handler.service.DetailTodoById(uintId)
+	if err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	httputils.NewSuccessResponse(ctx, http.StatusOK, "Success get detail todo", todo)
 }
