@@ -7,6 +7,7 @@ import (
 	"github.com/dekguh/learn-go-api/internal/api/model"
 	"github.com/dekguh/learn-go-api/internal/api/repository"
 	"github.com/dekguh/learn-go-api/internal/api/service"
+	dbutils "github.com/dekguh/learn-go-api/internal/pkg/utils/database"
 	httputils "github.com/dekguh/learn-go-api/internal/pkg/utils/http"
 	"github.com/dekguh/learn-go-api/internal/pkg/validator"
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,9 @@ func TodoRoutes(r *gin.Engine, db *gorm.DB) {
 
 	groupTodo := r.Group("/todos", middleware.Authentication())
 	{
-		groupTodo.POST("/create", todoHandler.CreateTodo)
+		groupTodo.POST("/create", func(ctx *gin.Context) {
+			todoHandler.CreateTodo(ctx, db)
+		})
 		groupTodo.GET("/search", func(ctx *gin.Context) {
 			todoHandler.FindAllTodos(ctx, db)
 		})
@@ -49,8 +52,9 @@ func NewTodoHandler(service service.TodoService) *TodoHandler {
 // @Success 200 {object} httputils.SuccessResponse{data=model.Todo}
 // @Failure 400 {object} httputils.ErrorResponse
 // @Router /todos/create [post]
-func (handler *TodoHandler) CreateTodo(ctx *gin.Context) {
+func (handler *TodoHandler) CreateTodo(ctx *gin.Context, db *gorm.DB) {
 	var json CreateTodoReq
+	dbutils.SetCurrentUserId(db, ctx.GetUint("user_id"))
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		errors := validator.FormatValidationError(err)
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, validator.JoinErrorValidation(errors))
@@ -81,6 +85,7 @@ func (handler *TodoHandler) CreateTodo(ctx *gin.Context) {
 // @Router /todos/search [get]
 func (handler *TodoHandler) FindAllTodos(ctx *gin.Context, db *gorm.DB) {
 	todos, err := handler.service.FindAllTodos()
+	dbutils.SetCurrentUserId(db, ctx.GetUint("user_id"))
 	if err != nil {
 		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return

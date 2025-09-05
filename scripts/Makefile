@@ -4,6 +4,12 @@ run:
 migration-up:
 	cd ../ && go run cmd/migration-up/main.go
 
+migration-down:
+	cd ../ && go run cmd/migration-down/main.go
+
+migration-create-file:
+	cd ../ && migrate create -ext sql -dir db/migrations -seq $(name)
+
 swag init:
 	cd ../ && swag init -g cmd/api/main.go -d ./ -o ./cmd/api/docs
 
