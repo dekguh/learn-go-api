@@ -1,8 +1,8 @@
 run:
 	cd ../ && air
 
-migrate:
-	cd ../ && go run cmd/migrate/main.go
+migration-up:
+	cd ../ && go run cmd/migration-up/main.go
 
 swag init:
 	cd ../ && swag init -g cmd/api/main.go -d ./ -o ./cmd/api/docs
