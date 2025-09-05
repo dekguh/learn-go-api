@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/dekguh/learn-go-api/internal/api/http/middleware"
 	"github.com/dekguh/learn-go-api/internal/api/model"
@@ -35,6 +36,9 @@ func TodoRoutes(r *gin.Engine, db *gorm.DB) {
 		})
 		groupTodo.GET("/search", func(ctx *gin.Context) {
 			todoHandler.FindAllTodos(ctx, db)
+		})
+		groupTodo.DELETE("/delete/:id", func(ctx *gin.Context) {
+			todoHandler.DeleteTodoById(ctx, db)
 		})
 	}
 }
@@ -92,4 +96,31 @@ func (handler *TodoHandler) FindAllTodos(ctx *gin.Context, db *gorm.DB) {
 	}
 
 	httputils.NewSuccessResponse(ctx, http.StatusOK, "success", todos)
+}
+
+// @Summary Delete todo by id
+// @Description Delete todo by id
+// @Tags Todos
+// @Accept json
+// @Produce json
+// @Param id path string true "Todo id"
+// @Success 200 {object} httputils.SuccessResponse{data=nil}
+// @Failure 400 {object} httputils.ErrorResponse
+// @Router /todos/delete/{id} [delete]
+func (handler *TodoHandler) DeleteTodoById(ctx *gin.Context, db *gorm.DB) {
+	dbutils.SetCurrentUserId(db, ctx.GetUint("user_id"))
+	idStr := ctx.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, "Invalid ID format")
+		return
+	}
+	uintId := uint(id)
+
+	dbutils.SetCurrentUserId(db, ctx.GetUint("user_id"))
+	if err := handler.service.DeleteTodoById(uintId); err != nil {
+		httputils.NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	httputils.NewSuccessResponse(ctx, http.StatusOK, "Success delete todo", nil)
 }
