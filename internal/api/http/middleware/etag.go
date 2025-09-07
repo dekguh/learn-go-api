@@ -3,7 +3,6 @@ package middleware
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -45,12 +44,10 @@ func EtagMiddleware() gin.HandlerFunc {
 			if ifNoneMatch != "" {
 				if ifNoneMatch == etag {
 					ctx.AbortWithStatus(http.StatusNotModified)
-					log.Println("Not Modified")
 					return
 				}
 			}
 
-			log.Println("ETag called: ", etag)
 			ctx.Writer.Header().Set("ETag", etag)
 		}
 	}
