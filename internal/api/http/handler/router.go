@@ -6,6 +6,7 @@ import (
 
 	handlerTodo "github.com/dekguh/learn-go-api/internal/api/http/handler/todo"
 	handlerUser "github.com/dekguh/learn-go-api/internal/api/http/handler/user"
+	"github.com/dekguh/learn-go-api/internal/api/http/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -24,6 +25,8 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		},
 		MaxAge: 12 * time.Hour,
 	}))
+
+	r.Use(middleware.EtagMiddleware())
 
 	handlerUser.UserRoutes(r, db)
 	handlerTodo.TodoRoutes(r, db)
